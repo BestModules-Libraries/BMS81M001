@@ -1,0 +1,51 @@
+#######################################
+# Syntax Coloring Map for BMS81M001
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+BMS81M001	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+reset	KEYWORD2
+setWorkMode	KEYWORD2
+getShakeStatus	KEYWORD2
+getFWVer	KEYWORD2
+getParameterSetting	KEYWORD2
+getStatus	KEYWORD2
+setShake	KEYWORD2
+setIdleModeDelay	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+IIC_SLAVE_ADDR	LITERAL1
+BMS81M001_CLOCK	LITERAL1	
+SUCCESS	LITERAL1
+FAIL	LITERAL1
+MOTION	LITERAL1
+NOMOTION	LITERAL1
+
+BIT_STBY_XA	LITERAL1
+BIT_STBY_YA	LITERAL1
+BIT_STBY_ZA	LITERAL1
+BIT_STBY_XG	LITERAL1
+BIT_STBY_YG	LITERAL1
+BIT_STBY_XYZA	LITERAL1
+BIT_STBY_XYZG	LITERAL1
+BIT_ENABLE_XYZA_XYZG	LITERAL1
+HIGH_SENSITIVITY	LITERAL1
+MIDDLE_SENSITIVITY	LITERAL1
+LOW_SENSITIVITY	LITERAL1
+
+OFF	LITERAL1
+WAKE_5Hz	LITERAL1
+WAKE_20Hz	LITERAL1
+WAKE_40Hz	LITERAL1
