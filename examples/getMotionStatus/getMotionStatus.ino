@@ -1,9 +1,8 @@
 /*****************************************************************
-File:         BMS81M001.ino
+File:         getMotionStatus.ino
 Description:  1.Wire1 interface is used to communicate with BMS81M001.
               2.hardware Serial (BAUDRATE 125000) is used to communicate with Serial port monitor.
               3.when motion is detected printf"Motion detected!".
-connection method： intPin:D22 sdaPin:D20 sclPin:D21
 ******************************************************************/
 
 #include "BMS81M001.h"
@@ -49,7 +48,7 @@ void loop()
 { 
     if(WakeOnShake.getStatus() == 0)  
      {
-        if(!WakeOnShake.getShakeStatus())    //Read the state of shock
+        if(WakeOnShake.getShakeStatus())    //Read the state of shock
         {
             counter++;
             Serial.println("Motion detected!  "+ (String)counter);   //Tremors occur

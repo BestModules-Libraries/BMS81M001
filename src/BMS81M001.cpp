@@ -1,20 +1,17 @@
 
 /**********************************************************************
-File:       		BMS81M001.cpp
-Author:        	BESTMODULES
-Description:    MPU6050 Wake on Vibration Module
-History：			
-	V1.0.1	 -- initial version；2023-05-10；Arduino IDE : v1.8.13
-
+File:       	BMS81M001.cpp
+Author:         BEST MODULES CORP.
+Description:    BMS81M001.cpp is the library for controlling the BMS81M001 Vibration sensor Module
+Version:        V1.0.2   -- 2024-09-03
 ***********************************************************************/
 #include "BMS81M001.h"
 
-
 /**********************************************************
 Description: Constructor
-Parameters:       @ TwoWire : Wire object you use 
-                  statusPin: int pin     
-Return:          
+Parameters:  statusPin: status pin     
+             *theWire: Wire object if your board has more than one IIC interface parameter range:&wire、&wire1、&wire2  
+Return:      Node    
 Others:     
 **********************************************************/
 BMS81M001::BMS81M001(uint8_t statusPin,TwoWire *theWire)
@@ -25,8 +22,8 @@ BMS81M001::BMS81M001(uint8_t statusPin,TwoWire *theWire)
 
 /**********************************************************
 Description: Module Initial
-Parameters:      I2C_Clock:baud rate(The default baud rate:100000)         
-Return:          
+Parameters:  I2C_Clock:baud rate(The default baud rate:100000)         
+Return:      void   
 Others:          
 **********************************************************/
 void BMS81M001::begin(uint32_t I2C_Clock)
@@ -39,8 +36,10 @@ void BMS81M001::begin(uint32_t I2C_Clock)
 
 /*********************************************************************************
 Description: Module reset(set motion thr,dur,delay and sensor setting to initial)
-Parameters:               
-Return:      Communication status  0:Success 1:Fail      
+Parameters:  void             
+Return:      Implementation status:  
+                                   0:Success 
+                                   1:Fail      
 Others:              
 **********************************************************************************/
 uint8_t BMS81M001::reset(void)
@@ -74,14 +73,17 @@ uint8_t BMS81M001::reset(void)
 }
 
 /***************************************************************************************
-Description:  Enter low-power accel-only mode.
-              In low-power accel mode, the chip goes to sleep and only wakes up to sample
-              the accelerometer at one of the following frequencies:
-              5Hz, 20Hz, 40Hz
-              Requesting a rate not listed above, the device will disable low-power mode        
-Parameters:   rate: WAKE_40Hz/WAKE_20Hz/WAKE_5Hz
-              isEnable:0：OFF  1：ON  
-Return:      Communication status  0:Success 1:Fail      
+Description:  Set work mode     
+Parameters:   rate:work mode
+                 0:Normal mode
+                 2:Low power mode 2
+                 3:Low power mode 3
+                 4:Low power mode 4
+              isEnable == 1: Working mode setting Enabled
+              isEnable == Other value: Working mode setting Disable
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail     
 Others:              
 *****************************************************************************************/
 uint8_t BMS81M001::setWorkMode(uint8_t rate,uint8_t isEnable)
@@ -128,9 +130,11 @@ uint8_t BMS81M001::setWorkMode(uint8_t rate,uint8_t isEnable)
 }
 
 /**************************************************************************************
-Description: read motion status when status pin external interrupt is availaible
-Parameters :     
-Return:      Communication status  0:motion detected  1:no motion      
+Description:  get vibration status
+Parameters :  node    
+Return:       Implementation status:  
+                                   0:No vibration detected
+                                   1:Vibration detected     
 Others:              
 ***************************************************************************************/
 uint8_t BMS81M001::getShakeStatus()
@@ -164,11 +168,9 @@ uint8_t BMS81M001::getShakeStatus()
 }
 
 /*************************************************************************************************
-Description: get F/W Ver with iic
-Parameters : ver: F/W ver 
-             version information high byte+ version information low byte
-             default:version number = 1
-Return:      version number :high byte + low byte     
+Description: get Fermware version
+Parameters : node
+Return:      ver :Fermware version     
 Others:              
 **************************************************************************************************/
 uint16_t BMS81M001::getFWVer()
@@ -191,15 +193,16 @@ uint16_t BMS81M001::getFWVer()
       
     }
     return ver;
-
 }
 
 /**********************************************************
-Description: get motion setting with iic
-Parameters : thr: motion threshold
-             dur: motion duration
-             delay: module idle delay
-Return:      Communication status  0:Success 1:Fail      
+Description:  get parameter setting
+Parameters :  &thr: Store the shock threshold
+              &dur: Store the duration
+              &idle_delay: Store the Time to enter low power mode
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail        
 Others:              
 **********************************************************/
 uint8_t BMS81M001::getParameterSetting(uint8_t &thr,uint8_t &dur,uint8_t &idle_delay)
@@ -229,8 +232,10 @@ uint8_t BMS81M001::getParameterSetting(uint8_t &thr,uint8_t &dur,uint8_t &idle_d
 
 /**********************************************************
 Description: Get INTpin status
-Parameters : 
-Return:      INT pin status     
+Parameters : node
+Return:      STA PIN Status:
+                            0:STA output low level  
+                            1:STA output high level      
 Others:              
 **********************************************************/
 uint8_t BMS81M001::getStatus()
@@ -239,10 +244,12 @@ uint8_t BMS81M001::getStatus()
 }
 
 /**********************************************************
-Description: set motion threshold
-Parameters:  thr: (1~255), sensitive: 1LSB/2mg
-             dur: (1~255), sensitive: 1LSB/1ms        
-Return:      Communication status  0:Success 1:Fail      
+Description:  set motion threshold
+Parameters:   thr: Vibration threshold,Parameter range:1~255, unit: : 1LSB/2mg
+              dur: duration,Parameter range:1~255, unit: 1LSB/1ms        
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail      
 Others:              
 **********************************************************/
 uint8_t BMS81M001::setShake(uint8_t thr,uint8_t dur)
@@ -284,16 +291,15 @@ uint8_t BMS81M001::setShake(uint8_t thr,uint8_t dur)
     {
         return FAIL;
     } 
-
-
 }
 
-
-
 /******************************************************************************************************************
-Description: set idle mode delay(modue will enter idle mode when there's no motion deteceted lasting for this time)
-Parameters :       @delay: (0~255),  1LSB/s, delay=0(idle mode disable)       
-Return:      Communication status  0:Success 1:Fail      
+Description:  Set the time for entering the low-power mode
+Parameters :  idle_delay = 0: Module always working   
+              idle_delay > 0: Time to enter low power mode,Parameter range:1~255, unit:s   
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail      
 Others:              
 *******************************************************************************************************************/
 uint8_t BMS81M001::setIdleModeDelay(uint8_t idle_delay)
@@ -329,9 +335,11 @@ uint8_t BMS81M001::setIdleModeDelay(uint8_t idle_delay)
 }
 
 /**********************************************************
-Description: set motion sensitivity level
+Description:  set motion sensitivity level
 Parameters :  lev:（1~5）,lev = 1 is the highest sensitivity       
-Return:      Communication status  0:Success 1:Fail      
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail        
 Others:              
 **********************************************************/
 uint8_t BMS81M001::setThresholdLevel(uint8_t lev)
@@ -362,9 +370,8 @@ uint8_t BMS81M001::setThresholdLevel(uint8_t lev)
     return status; 
 }
 /**********************************************************
-Description: get sensor original data with iic
-Parameters :       
-            @data: sensor data read (12 byte)   
+Description:  get sensor original data with iic
+Parameters :  data[] sensor data read (12 byte)   
                     byte0: accel_xout[15:8]
                     byte1: accel_xout[7:0]
                     byte2: accel_yout[15:8]
@@ -377,7 +384,9 @@ Parameters :
                     byte9: gyro_yout [7:0]
                     byte10: gyro_zout[15:8]
                     byte11: gyro_zout[7:0]
-Return:            
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail            
 Others:              
 **********************************************************/
 uint8_t BMS81M001::getSensorData(uint8_t data[])
@@ -406,11 +415,13 @@ uint8_t BMS81M001::getSensorData(uint8_t data[])
 }
 
 /**********************************************************************************************
-Description: enter sleep mode 
-             When  module(BMS81M001) is in sleep mode , accelerometer and gyroscope are disable, 
-             the only way to wake it up is using the wakeup() function 
-Parameters :                  
-Return:      Communication status  0:Success 1:Fail      
+Description:  enter sleep mode 
+              When  module(BMS81M001) is in sleep mode , accelerometer and gyroscope are disable, 
+              the only way to wake it up is using the wakeup() function 
+Parameters :  void                 
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail       
 Others:              
 **********************************************************************************************/
   uint8_t BMS81M001::enterSleepMode(void)
@@ -442,13 +453,14 @@ Others:
     {
         return FAIL;
     } 
-
  }
 
 /**********************************************************************************************
-Description: wake up the module(BMS81M001) when it is in sleep mode 
-Parameters :                  
-Return:      Communication status  0:Success 1:Fail      
+Description:  wake up the module(BMS81M001) when it is in sleep mode 
+Parameters :  void                
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail       
 Others:      after wakeup , it needs around 150ms to initial the sensor       
 **********************************************************************************************/
 uint8_t BMS81M001::wakeup(void)
@@ -474,11 +486,13 @@ uint8_t BMS81M001::wakeup(void)
 
 }
 /*****************************************************************
-Description: read byte from BMS81M001 with iic
+Description:  read byte from BMS81M001 with iic
 Parameters :  
-      rbuf: Data to be read.
-      rlen:Length of data to be read .           
-Return:      Communication status  0:Success 1:Fail      
+              rbuf: Data to be read.
+              rlen:Length of data to be read .           
+Return:       Implementation status:  
+                                   0:Success 
+                                   1:Fail      
 Others:              
 *****************************************************************/
 uint8_t BMS81M001::readBytes(int rbuf[], int rlen)
@@ -503,11 +517,11 @@ uint8_t BMS81M001::readBytes(int rbuf[], int rlen)
 }
 
 /*****************************************************************
-Description: write byte to BMS81M001 with iic
+Description:  write byte to BMS81M001 with iic
 Parameters :    
-      wbuf:Data to be written.
-      wlen:Length of data to be written.        
-Return:      Communication status  0:Success 1:Fail      
+              wbuf:Data to be written.
+              wlen:Length of data to be written.        
+Return:       void     
 Others:              
 *****************************************************************/
 void BMS81M001::writeBytes(uint8_t wbuf[], uint8_t wlen)

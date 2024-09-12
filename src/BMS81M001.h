@@ -1,10 +1,8 @@
 /**********************************************************************
 File:           BMS81M001.h
-Author:         BESTMODULES
-Description:    MPU6050 Wake on Vibration Module
-History：      
-  V1.0.1   -- initial version；2023-05-10；Arduino IDE : v1.8.13
-
+Author:         BEST MODULES CORP.
+Description:    Define classes and required variables
+Version:        V1.0.2   -- 2024-09-03
 ***********************************************************************/
 
 #ifndef BMS81M001_h
